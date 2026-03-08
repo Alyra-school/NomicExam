@@ -489,11 +489,14 @@ function Header({ route }) {
   return (
     <header className="site-header">
       <div className="brand">
-        <div className="logo">NE</div>
-        <div>
-          <h1>Nomic Exam</h1>
-          <p className="subtitle">3-day blockchain assessments</p>
+        <div className="logo-pair">
+          <img src="/nomadic.png" alt="Nomadic" />
+          <img src="/alyra.png" alt="Alyra" />
         </div>
+      </div>
+      <div className="header-title">
+        <h1>Employee assessment</h1>
+        <p className="subtitle">3-day blockchain assessments</p>
       </div>
       <nav className="nav">
         {PAGES.map((page) => (
@@ -573,7 +576,7 @@ function Home() {
     <main className="container">
       <section className="hero">
         <div>
-          <h2>Intensive exam program</h2>
+          <h2>Employee assessment</h2>
           <p>
             Each day contains multiple exercises. Access is protected and unlocked with a simple code.
           </p>
@@ -663,7 +666,7 @@ function ExercisePage({ exercise, unlocked, onUnlock }) {
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>Nomic Exam · Blockchain training content</p>
+      <p>Nomadic x Alyra Employee assessment / All rights reserved @ Alyra 2026</p>
     </footer>
   );
 }
