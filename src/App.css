@@ -337,6 +337,11 @@ a {
   gap: 1rem;
 }
 
+.long-form {
+  display: grid;
+  gap: 1rem;
+}
+
 .field {
   display: grid;
   gap: 0.4rem;
@@ -348,6 +353,15 @@ a {
   border-radius: 10px;
   border: 1px solid var(--border);
   font-size: 1rem;
+}
+
+.field textarea {
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  resize: vertical;
 }
 
 .qcm-list {

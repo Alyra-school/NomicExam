@@ -3,7 +3,10 @@ import './App.css';
 
 const ACCESS_KEY = 'nomic_exam_unlocked_ids';
 const ADMIN_HASH = 'cc4831395437a9713314ff9286592b1013cc3822e2c98d041b421c1d8a686504';
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwl0ydU4iKIt6GWgRUP5Rdl4DZglNlAKqab6C4OAF_QFsbPGHo3-0gb8vBuMPsDFiWI/exec';
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwjjvlfxFY-cEnVXlw0KBZCwZJvUYBZX99T7kwWHozfQ2EKFiA4TMxFTWxliJZo9c2H/exec';
+const SHEET_QCM = 'QCM';
+const SHEET_DAY1_EX1 = 'Day1-Ex1';
+const SHEET_DAY1_EX2 = 'Day1-Ex2';
 
 const QCM_QUESTIONS = [
   {
@@ -188,6 +191,14 @@ const QCM_QUESTIONS = [
   },
 ];
 
+const DAY1_EX1_QUESTIONS = [
+  'What problem was EIP-1559 designed to solve in the Ethereum fee market?',
+  'How does the introduction of a base fee change the user experience for setting transaction fees?',
+  'What is the role of the fee "burn" in EIP-1559, and why does it matter economically?',
+  'Explain how the base fee is adjusted from block to block and what target block utilization means.',
+  'What happens if a block exceeds the target gas usage, and how is the base fee updated in that case?',
+];
+
 const PAGES = [
   { id: 'home', label: 'Home' },
   { id: 'day1', label: 'Day 1' },
@@ -203,25 +214,7 @@ const EXERCISES = [
     title: 'Reading & Questions (EIP)',
     codeHash: '3489b0e55cc164408e39df3f04009414c4da161a6e728656b92e3df7e640c399',
     content: (
-      <>
-        <p className="muted">Selected documentation: EIP-1559 (Ethereum fee market change).</p>
-        <p>
-          Task: read the official EIP-1559 documentation in English, then answer the questions.
-        </p>
-        <div className="qa">
-          <h4>General Questions (3)</h4>
-          <ol className="numbered">
-            <li>What problem was EIP-1559 designed to solve in the Ethereum fee market?</li>
-            <li>How does the introduction of a base fee change the user experience for setting transaction fees?</li>
-            <li>What is the role of the fee "burn" in EIP-1559, and why does it matter economically?</li>
-          </ol>
-          <h4>Technical Questions (2)</h4>
-          <ol className="numbered">
-            <li>Explain how the base fee is adjusted from block to block and what target block utilization means.</li>
-            <li>What happens if a block exceeds the target gas usage, and how is the base fee updated in that case?</li>
-          </ol>
-        </div>
-      </>
+      <Day1Ex1Form />
     ),
   },
   {
@@ -231,17 +224,7 @@ const EXERCISES = [
     title: 'Written Expression (Social Media Update)',
     codeHash: 'c68be591024b06b25a7c6b80f77beb511fd7993a1b137e3c2c04ae6cf9c688e8',
     content: (
-      <>
-        <p>
-          Task (EN): Write a short social media announcement (120–160 words) about a new update of a
-          migration tool between Tezos and Etherlink. The audience is technical but busy. Include:
-        </p>
-        <ul className="flat-list">
-          <li>What changed in the update.</li>
-          <li>Why it is useful for teams moving assets or contracts.</li>
-          <li>A short call-to-action.</li>
-        </ul>
-      </>
+      <Day1Ex2Form />
     ),
   },
   {
@@ -393,6 +376,164 @@ async function sha256(value) {
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+async function sendToSheet(payload) {
+  await fetch(SHEET_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    mode: 'no-cors',
+  });
+}
+
+function Day1Ex1Form() {
+  const [name, setName] = useState('');
+  const [answers, setAnswers] = useState(() => DAY1_EX1_QUESTIONS.map(() => ''));
+  const [status, setStatus] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const onChangeAnswer = (index, value) => {
+    setAnswers((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (!name.trim()) {
+      setStatus('Please enter your first name.');
+      return;
+    }
+    if (answers.some((value) => !value.trim())) {
+      setStatus('Please answer all questions.');
+      return;
+    }
+    setSending(true);
+    setStatus('');
+    try {
+      await sendToSheet({
+        sheetName: SHEET_DAY1_EX1,
+        name: name.trim(),
+        answers,
+        submittedAt: new Date().toISOString(),
+      });
+      setStatus('Thanks, your answers have been sent.');
+    } catch (error) {
+      setStatus('Error while sending. Please try again later.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <form className="long-form" onSubmit={onSubmit}>
+      <p className="muted">Selected documentation: EIP-1559 (Ethereum fee market change).</p>
+      <p>Task: read the official EIP-1559 documentation in English, then answer the questions.</p>
+      <label className="field">
+        First name
+        <input
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Your first name"
+          required
+        />
+      </label>
+      <ol className="numbered">
+        {DAY1_EX1_QUESTIONS.map((question, index) => (
+          <li key={question}>
+            <p className="qcm-question">{question}</p>
+            <textarea
+              rows={4}
+              value={answers[index]}
+              onChange={(event) => onChangeAnswer(index, event.target.value)}
+              placeholder="Your answer"
+              required
+            />
+          </li>
+        ))}
+      </ol>
+      <button className="btn" type="submit" disabled={sending}>
+        {sending ? 'Sending...' : 'Submit Exercise 1'}
+      </button>
+      <p className="muted">{status}</p>
+    </form>
+  );
+}
+
+function Day1Ex2Form() {
+  const [name, setName] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [status, setStatus] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (!name.trim()) {
+      setStatus('Please enter your first name.');
+      return;
+    }
+    if (!answer.trim()) {
+      setStatus('Please write your response.');
+      return;
+    }
+    setSending(true);
+    setStatus('');
+    try {
+      await sendToSheet({
+        sheetName: SHEET_DAY1_EX2,
+        name: name.trim(),
+        answer,
+        submittedAt: new Date().toISOString(),
+      });
+      setStatus('Thanks, your answer has been sent.');
+    } catch (error) {
+      setStatus('Error while sending. Please try again later.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <form className="long-form" onSubmit={onSubmit}>
+      <p>
+        Task (EN): Write a short social media announcement (120–160 words) about a new update of a
+        migration tool between Tezos and Etherlink. The audience is technical but busy. Include:
+      </p>
+      <ul className="flat-list">
+        <li>What changed in the update.</li>
+        <li>Why it is useful for teams moving assets or contracts.</li>
+        <li>A short call-to-action.</li>
+      </ul>
+      <label className="field">
+        First name
+        <input
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Your first name"
+          required
+        />
+      </label>
+      <label className="field">
+        Response
+        <textarea
+          rows={10}
+          value={answer}
+          onChange={(event) => setAnswer(event.target.value)}
+          placeholder="Write your announcement here"
+          required
+        />
+      </label>
+      <button className="btn" type="submit" disabled={sending}>
+        {sending ? 'Sending...' : 'Submit Exercise 2'}
+      </button>
+      <p className="muted">{status}</p>
+    </form>
+  );
+}
+
 function QcmForm() {
   const [name, setName] = useState('');
   const [answers, setAnswers] = useState(() => ({}));
@@ -423,20 +564,13 @@ function QcmForm() {
     setSending(true);
     setStatus('');
     try {
-      const payload = {
+      await sendToSheet({
+        sheetName: SHEET_QCM,
         name: name.trim(),
         answers: QCM_QUESTIONS.map((q) => answers[q.id]),
         submittedAt: new Date().toISOString(),
-      };
-      await fetch(SHEET_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload),
-        mode: 'no-cors',
       });
       setStatus('Thanks, your answers have been sent.');
-      setName('');
-      setAnswers({});
     } catch (error) {
       setStatus('Error while sending. Please try again later.');
     } finally {
