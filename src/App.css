@@ -230,6 +230,24 @@ a {
   margin-bottom: 2rem;
 }
 
+.day-image {
+  margin-top: 1.2rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  max-width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.day-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
 .exercise {
   position: relative;
   display: grid;

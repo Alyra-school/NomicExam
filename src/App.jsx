@@ -747,13 +747,18 @@ function Home() {
   );
 }
 
-function DayOverview({ day, title, description, unlockedIds, onUnlock }) {
+function DayOverview({ day, title, description, imageSrc, unlockedIds, onUnlock }) {
   const dayExercises = EXERCISES.filter((exercise) => exercise.day === day);
   return (
     <main className="container">
       <section className="notice">
         <h2>{title}</h2>
         <p>{description}</p>
+        {imageSrc && (
+          <div className="day-image">
+            <img src={imageSrc} alt={`${title} visual`} />
+          </div>
+        )}
       </section>
       <section className="grid">
         {dayExercises.map((exercise) => {
@@ -832,6 +837,7 @@ function App() {
             day="day1"
             title="Day 1"
             description="English assessment applied to blockchain."
+            imageSrc="/nomadic1.png"
             unlockedIds={unlockedIds}
             onUnlock={(id) => {
               if (!unlockedIds.includes(id)) {
@@ -847,6 +853,7 @@ function App() {
             day="day2"
             title="Day 2"
             description="Technical MCQ and DApp case study."
+            imageSrc="/nomadic2.png"
             unlockedIds={unlockedIds}
             onUnlock={(id) => {
               if (!unlockedIds.includes(id)) {
@@ -862,6 +869,7 @@ function App() {
             day="day3"
             title="Day 3"
             description="Smart contract reading and development."
+            imageSrc="/nomadic3.png"
             unlockedIds={unlockedIds}
             onUnlock={(id) => {
               if (!unlockedIds.includes(id)) {
