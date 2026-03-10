@@ -7,189 +7,240 @@ const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwjjvlfxFY-cEnVX
 const SHEET_QCM = 'QCM';
 const SHEET_DAY1_EX1 = 'Day1-Ex1';
 const SHEET_DAY1_EX2 = 'Day1-Ex2';
-
 const QCM_QUESTIONS = [
-  {
-    id: 'q1',
-    text: 'What is the main difference between a Layer 1 chain and a rollup?',
-    options: [
-      'Rollups execute off-chain and post proofs on L1',
-      'L1 chains only store data',
-      'Rollups are always permissioned',
-      'L1 cannot run smart contracts',
-    ],
-  },
-  {
-    id: 'q2',
-    text: 'EOA stands for:',
-    options: [
-      'Externally Owned Account',
-      'Ethereum Oracle Agent',
-      'External Operator Address',
-      'Embedded On-chain Account',
-    ],
-  },
-  {
-    id: 'q3',
-    text: 'Which entity can initiate a transaction without code execution?',
-    options: ['Smart contract', 'EOA', 'Validator', 'Light client'],
-  },
-  {
-    id: 'q4',
-    text: 'What is a common vulnerability in smart contracts?',
-    options: ['Re-entrancy', 'TLS downgrade', 'SQL injection', 'CSRF'],
-  },
-  {
-    id: 'q5',
-    text: 'In EVM, gas is primarily used to:',
-    options: [
-      'Limit computation and prevent abuse',
-      'Encrypt storage',
-      'Prove identity',
-      'Compress blocks',
-    ],
-  },
-  {
-    id: 'q6',
-    text: 'What is a key property of a Merkle tree in blockchains?',
-    options: [
-      'Efficient inclusion proofs',
-      'Constant block time',
-      'Unlimited throughput',
-      'Private transactions by default',
-    ],
-  },
-  {
-    id: 'q7',
-    text: 'In a rollup, the data availability problem concerns:',
-    options: [
-      'Ensuring transaction data is accessible to all',
-      'Preventing double spending',
-      'Increasing block size only',
-      'Validating signatures',
-    ],
-  },
-  {
-    id: 'q8',
-    text: 'What does a smart contract\'s "immutable" bytecode imply?',
-    options: [
-      'It cannot be changed once deployed',
-      'It can be upgraded without proxy',
-      'It is encrypted',
-      'It requires admin approval to run',
-    ],
-  },
-  {
-    id: 'q9',
-    text: 'Which statement about consensus is correct?',
-    options: [
-      'It allows nodes to agree on a single history',
-      'It prevents any forks ever',
-      'It eliminates the need for cryptography',
-      'It guarantees zero fees',
-    ],
-  },
-  {
-    id: 'q10',
-    text: 'What is the purpose of a nonce in a transaction?',
-    options: [
-      'Prevent replay and order transactions',
-      'Store contract code',
-      'Pay network fees',
-      'Verify the validator set',
-    ],
-  },
-  {
-    id: 'q11',
-    text: 'What is a proxy pattern used for?',
-    options: ['Upgradability', 'Faster mining', 'Randomness', 'Gas refund'],
-  },
-  {
-    id: 'q12',
-    text: 'Which is true about an oracle?',
-    options: [
-      'It brings off-chain data on-chain',
-      'It creates blocks',
-      'It replaces validators',
-      'It encrypts private keys',
-    ],
-  },
-  {
-    id: 'q13',
-    text: 'In Solidity, why use checks-effects-interactions?',
-    options: [
-      'To reduce re-entrancy risk',
-      'To compress logs',
-      'To save storage',
-      'To upgrade automatically',
-    ],
-  },
+
   {
     id: 'q14',
-    text: 'What does "finality" mean in a blockchain context?',
+    text: 'Why can light clients operate without storing the full blockchain state?',
     options: [
-      'A block is highly unlikely to be reverted',
-      'The block is encrypted forever',
-      'The chain is private',
-      'Validators are fixed',
+      'They rely entirely on trusted validator signatures',
+      'They verify block headers and inclusion proofs only',
+      'They execute transactions off-chain locally',
+      'They download encrypted blockchain snapshots',
     ],
   },
+  
   {
-    id: 'q15',
-    text: 'What is the main difference between PoW and PoS?',
+    id: 'q3',
+    text: 'In Ethereum, why can smart contracts not initiate transactions independently?',
     options: [
-      'PoW uses computation, PoS uses stake',
-      'PoS has no validators',
-      'PoW has instant finality',
-      'PoS cannot be decentralized',
+      'Gas fees cannot be paid by contract accounts',
+      'Smart contracts cannot sign transactions with private keys',
+      'Smart contracts are forbidden from sending messages',
+      'Validators reject transactions sent by contracts',
     ],
   },
-  {
-    id: 'q16',
-    text: 'What is a common goal of L2 solutions?',
-    options: [
-      'Increase throughput and reduce fees',
-      'Replace cryptography',
-      'Remove smart contracts',
-      'Require KYC',
-    ],
-  },
-  {
-    id: 'q17',
-    text: 'Which attack targets contract logic by calling it repeatedly?',
-    options: ['Re-entrancy', 'Phishing', 'DNS spoofing', 'Cache poisoning'],
-  },
-  {
-    id: 'q18',
-    text: 'Why are events useful in Ethereum?',
-    options: [
-      'They enable efficient off-chain indexing',
-      'They store state',
-      'They reduce gas to zero',
-      'They verify signatures',
-    ],
-  },
+  
   {
     id: 'q19',
-    text: 'What is the role of a governance token?',
+    text: 'Why is cryptographic finality considered stronger than probabilistic finality?',
     options: [
-      'Voting on protocol changes',
-      'Paying all gas fees',
-      'Encrypting storage',
-      'Generating private keys',
+      'Finalized blocks contain fewer transactions',
+      'Reverting finalized blocks would violate consensus rules',
+      'Finalized blocks are encrypted by validators',
+      'Finalized blocks are stored on fewer nodes',
     ],
   },
+  
+  {
+    id: 'q8',
+    text: 'What is the objective of proposer-builder separation (PBS)?',
+    options: [
+      'Separating gas fee markets from block rewards',
+      'Separating consensus voting from transaction validation',
+      'Separating block construction from block proposal responsibilities',
+      'Separating user wallets from validator infrastructure',
+    ],
+  },
+  
+  {
+    id: 'q5',
+    text: 'What is the economic purpose of transaction fees in most blockchains?',
+    options: [
+      'Guaranteeing immediate finality of blocks',
+      'Attaching a cost to computation and network resources',
+      'Reducing the total supply of tokens',
+      'Encrypting the transaction payload in blocks',
+    ],
+  },
+  
+  {
+    id: 'q17',
+    text: 'What feature allows Tezos to evolve its protocol without hard forks?',
+    options: [
+      'Developer voting using off-chain governance councils',
+      'Self-amending protocol upgrades through on-chain governance',
+      'Centralized upgrades performed by core maintainers',
+      'Validator approval through external coordination',
+    ],
+  },
+  
+  {
+    id: 'q10',
+    text: 'What distinguishes validity rollups from optimistic rollups?',
+    options: [
+      'Transactions are processed without relying on Layer 1',
+      'Blocks are produced by trusted operators only',
+      'State transitions are verified using cryptographic validity proofs',
+      'Execution occurs entirely outside the blockchain',
+    ],
+  },
+  
+  {
+    id: 'q1',
+    text: 'What property of hash functions is essential for linking blocks securely in a blockchain?',
+    options: [
+      'Randomized encryption of block headers',
+      'Preimage resistance of the hash function',
+      'Deterministic compression of transactions',
+      'Symmetric encryption of block data',
+    ],
+  },
+  
   {
     id: 'q20',
-    text: 'What is the primary benefit of formal verification?',
+    text: 'Why do blockchain consensus protocols rely on economic incentives?',
     options: [
-      'Proving properties about contract behavior',
-      'Increasing block time',
-      'Replacing audits',
-      'Eliminating all bugs',
+      'Reducing the computational cost of transactions',
+      'Ensuring deterministic ordering of transactions',
+      'Aligning participant behavior with network security',
+      'Eliminating the need for cryptographic verification',
     ],
   },
-];
+  
+  {
+    id: 'q11',
+    text: 'What role does Data Availability Sampling play in modular blockchains?',
+    options: [
+      'Increasing rewards for block proposers',
+      'Reducing validator hardware requirements',
+      'Encrypting transaction payloads within blocks',
+      'Allowing nodes to probabilistically verify block data availability',
+    ],
+  },
+  
+  {
+    id: 'q7',
+    text: 'Which behavior is typically associated with maximal extractable value (MEV)?',
+    options: [
+      'Reducing block size to improve throughput',
+      'Reordering or inserting transactions to capture trading profit',
+      'Encrypting transactions before they reach validators',
+      'Randomizing transaction ordering in the mempool',
+    ],
+  },
+  
+  {
+    id: 'q4',
+    text: 'What security guarantee does a Merkle root provide in a block header?',
+    options: [
+      'Protection against forks in the network',
+      'Cryptographic commitment to the set of transactions',
+      'Identity verification of the block producer',
+      'Encryption of transaction contents in the block',
+    ],
+  },
+  
+  {
+    id: 'q18',
+    text: 'What role does delegation play in the Tezos Proof of Stake mechanism?',
+    options: [
+      'Delegation replaces the need for block producers',
+      'Validators temporarily transfer tokens to delegators',
+      'Delegation allows bypassing consensus participation',
+      'Token holders delegate validation rights without transferring ownership',
+    ],
+  },
+  
+  {
+    id: 'q6',
+    text: 'What does the CAP theorem imply for decentralized systems such as blockchains?',
+    options: [
+      'Security, scalability, and decentralization cannot coexist in practice',
+      'Consensus protocols always require trusted authorities',
+      'Consistency, availability, and partition tolerance cannot all be guaranteed simultaneously',
+      'Cryptographic systems cannot scale across networks',
+    ],
+  },
+  
+  {
+    id: 'q12',
+    text: 'Why is long-term state growth a scalability challenge for blockchains?',
+    options: [
+      'Validators must re-execute every transaction from genesis',
+      'Transactions must be permanently encrypted on-chain',
+      'Full nodes must maintain and update the entire global state',
+      'Consensus protocols require fixed block intervals',
+    ],
+  },
+  
+  {
+    id: 'q9',
+    text: 'Why do optimistic rollups include a challenge period after publishing a state update?',
+    options: [
+      'To distribute rewards among rollup operators',
+      'To encrypt transaction data before settlement',
+      'To synchronize validators across different networks',
+      'To allow participants to submit fraud proofs against invalid transitions',
+    ],
+  },
+  
+  {
+    id: 'q13',
+    text: 'What is the goal of sharding in blockchain system design?',
+    options: [
+      'Reducing the number of participating validators',
+      'Splitting network workload across multiple parallel shards',
+      'Preventing consensus forks through coordination',
+      'Encrypting transaction data across validator groups',
+    ],
+  },
+  
+  {
+    id: 'q2',
+    text: 'Why does decentralization increase the cost of censorship in a blockchain?',
+    options: [
+      'Transactions cannot be reordered in blocks',
+      'Many independent validators must coordinate to censor transactions',
+      'Blocks are produced by a single trusted node',
+      'Transaction contents are hidden from validators',
+    ],
+  },
+  
+  {
+    id: 'q15',
+    text: 'What is the defining principle of modular blockchain architectures?',
+    options: [
+      'Replacing consensus algorithms with trusted operators',
+      'Running all smart contract execution off-chain',
+      'Separating execution, consensus, settlement, and data availability',
+      'Combining all blockchain layers into one system',
+    ],
+  },
+  
+  {
+    id: 'q16',
+    text: 'What risk appears if a majority of stake colludes in a Proof of Stake network?',
+    options: [
+      'They may invalidate digital signature algorithms',
+      'They may decrypt user private keys on-chain',
+      'They may modify the genesis block parameters',
+      'They may censor transactions or reorganize recent blocks',
+    ],
+  },
+  
+  {
+    id: 'q21',
+    text: 'Which statement best describes the immutability of blockchain data?',
+    options: [
+      'Blockchain data is permanently encrypted and therefore immutable',
+      'Blockchain data cannot be modified under any circumstances',
+      'Blockchain data cannot change because nodes store identical copies',
+      'Blockchain data is economically impractical to modify once sufficiently confirmed',
+    ],
+  }
+  
+  ];
 
 const DAY1_EX1_QUESTIONS = [
   'What problem was EIP-1559 designed to solve in the Ethereum fee market?',
@@ -265,18 +316,30 @@ const EXERCISES = [
     codeHash: 'de396c7037d78f3537eb0d4278bb7840b6c5f2bf8e257f9c8d269e95a774e05f',
     content: (
       <>
-        <p>
-          Case: A team wants to build a DApp for peer-to-peer carbon credit trading. The DApp must support
-          onboarding, wallet connection, listing credits, settlement, and a simple dispute process.
+       <p>
+          <b>Case:</b> A team wants to build a DeFi lending protocol governed by a DAO, inspired by platforms such as Aave.
+          Users must be able to deposit assets, use them as collateral, borrow other assets, repay loans, and be liquidated if their position becomes too risky.
+          The DAO must be able to vote on listing new assets, changing risk parameters, allocating treasury funds, and activating emergency measures.
         </p>
-        <p>Task: Present a clear process to create this DApp. Your response should include:</p>
+
+        <p>
+          <b>Task</b>: Present a clear process to design or develop and launch this protocol. 
+          <br /> Your response may include, but is not limited to:
+        </p>
+
         <ul className="flat-list">
-          <li>Architecture overview (front-end, smart contracts, indexer, storage).</li>
-          <li>Key smart contracts and their responsibilities.</li>
-          <li>Security and compliance considerations.</li>
-          <li>Deployment and monitoring steps.</li>
-          <li>Testing strategy (unit, integration, audit).</li>
+          <li>- Architecture overview (front-end, smart contracts, oracle layer, indexer, governance interface, storage).</li>
+          <li>- Core smart contracts and their responsibilities.</li>
+          <li>- DAO design and governance process (proposal flow, voting, execution, emergency powers).</li>
+          <li>- Risk management model (collateral factors, liquidation thresholds, caps, oracle risks, bad debt handling).</li>
+          <li>- Security and compliance considerations.</li>
+          <li>- Deployment, monitoring, and incident response steps.</li>
+          <li>- Testing strategy (unit, integration, fuzzing, simulation, audit).</li>
         </ul>
+
+        <p>
+          <b>The Goal</b>: Be as detailed as you want, the goal is to give me a good overview on your knowledge and thinking process. 
+        </p>
       </>
     ),
   },
@@ -594,7 +657,7 @@ function QcmForm() {
       <ol className="numbered qcm-list">
         {QCM_QUESTIONS.map((question, index) => (
           <li key={question.id}>
-            <p className="qcm-question">{index + 1}. {question.text}</p>
+            <p className="qcm-question">{question.text}</p>
             <div className="qcm-options">
               {question.options.map((option, optionIndex) => (
                 <label key={option} className="qcm-option">
