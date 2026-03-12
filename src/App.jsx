@@ -3,10 +3,12 @@ import './App.css';
 
 const ACCESS_KEY = 'nomic_exam_unlocked_ids';
 const ADMIN_HASH = 'cc4831395437a9713314ff9286592b1013cc3822e2c98d041b421c1d8a686504';
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwjjvlfxFY-cEnVXlw0KBZCwZJvUYBZX99T7kwWHozfQ2EKFiA4TMxFTWxliJZo9c2H/exec';
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwhsmXTwekwm14yfOSw1-zaUSG6SxJA5fAXDOioUSuw8XsbLBy9kzclBc6kASTk6_CV/exec';
 const SHEET_QCM = 'QCM';
 const SHEET_DAY1_EX1 = 'Day1-Ex1';
 const SHEET_DAY1_EX2 = 'Day1-Ex2';
+const SHEET_DAY3_EX1 = 'Day3-Ex1';
+const SHEET_DAY3_EX2 = 'Day3-Ex2';
 const QCM_QUESTIONS = [
 
   {
@@ -250,6 +252,14 @@ const DAY1_EX1_QUESTIONS = [
   'What happens if a block exceeds the target gas usage, and how is the base fee updated in that case?',
 ];
 
+const DAY3_EX1_QUESTIONS = [
+  'What is the role of the reserve0 and reserve1 variables?',
+  'How does the contract compute fees during a swap?',
+  'What is the mint function for and when is it called?',
+  'Explain the reserve synchronization mechanism.',
+  'What is the purpose of the Swap event?',
+];
+
 const PAGES = [
   { id: 'home', label: 'Home' },
   { id: 'day1', label: 'Day 1' },
@@ -350,20 +360,7 @@ const EXERCISES = [
     title: 'Smart Contract Reading',
     codeHash: '16fba722fa657b8d8c8e705fe062c0183ef9cbb2c3b3cd178dbc3de1394d06fb',
     content: (
-      <>
-        <p>
-          Selected protocol: Uniswap V2. GitHub link:
-          <span className="mono"> https://github.com/Uniswap/v2-core</span>
-        </p>
-        <p>Task: read the <span className="mono">UniswapV2Pair.sol</span> contract and answer:</p>
-        <ol className="numbered">
-          <li>What is the role of the <span className="mono">reserve0</span> and <span className="mono">reserve1</span> variables?</li>
-          <li>How does the contract compute fees during a swap?</li>
-          <li>What is the <span className="mono">mint</span> function for and when is it called?</li>
-          <li>Explain the reserve synchronization mechanism.</li>
-          <li>What is the purpose of the <span className="mono">Swap</span> event?</li>
-        </ol>
-      </>
+      <Day3Ex1Form />
     ),
   },
   {
@@ -373,21 +370,7 @@ const EXERCISES = [
     title: 'Development (Solidity, Governance)',
     codeHash: '2219ffd527d11b998c2c086402abda02dfa9d54fa5911501bf222ca27bc809c7',
     content: (
-      <>
-        <p>
-          Design a governance contract in Solidity using OpenZeppelin libraries. The goal is to allow
-          token holders to vote on proposals.
-        </p>
-        <p>Requirements:</p>
-        <ul className="flat-list">
-          <li>Use <span className="mono">ERC20Votes</span> for the governance token.</li>
-          <li>Use <span className="mono">Governor</span> + modules (quorum, timelock).</li>
-          <li>Define a proposal lifecycle (creation, voting, execution).</li>
-          <li>Specify key parameters (quorum %, voting delay, voting period).</li>
-          <li>Include an example proposal (e.g., change a parameter).</li>
-        </ul>
-        <p className="muted">Deliverable: commented code + short explanation of choices.</p>
-      </>
+      <Day3Ex2Form />
     ),
   },
 ];
@@ -586,6 +569,161 @@ function Day1Ex2Form() {
           value={answer}
           onChange={(event) => setAnswer(event.target.value)}
           placeholder="Write your announcement here"
+          required
+        />
+      </label>
+      <button className="btn" type="submit" disabled={sending}>
+        {sending ? 'Sending...' : 'Submit Exercise 2'}
+      </button>
+      <p className="muted">{status}</p>
+    </form>
+  );
+}
+
+function Day3Ex1Form() {
+  const [name, setName] = useState('');
+  const [answers, setAnswers] = useState(() => DAY3_EX1_QUESTIONS.map(() => ''));
+  const [status, setStatus] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const onChangeAnswer = (index, value) => {
+    setAnswers((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (!name.trim()) {
+      setStatus('Please enter your first name.');
+      return;
+    }
+    if (answers.some((value) => !value.trim())) {
+      setStatus('Please answer all questions.');
+      return;
+    }
+    setSending(true);
+    setStatus('');
+    try {
+      await sendToSheet({
+        sheetName: SHEET_DAY3_EX1,
+        name: name.trim(),
+        answers,
+        submittedAt: new Date().toISOString(),
+      });
+      setStatus('Thanks, your answers have been sent.');
+    } catch (error) {
+      setStatus('Error while sending. Please try again later.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <form className="long-form" onSubmit={onSubmit}>
+      <p>
+        Selected protocol: Uniswap V2. GitHub link:
+        <span className="mono"> https://github.com/Uniswap/v2-core</span>
+      </p>
+      <p>Task: read the <span className="mono">UniswapV2Pair.sol</span> contract and answer:</p>
+      <label className="field">
+        First name
+        <input
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Your first name"
+          required
+        />
+      </label>
+      <ol className="numbered">
+        {DAY3_EX1_QUESTIONS.map((question, index) => (
+          <li key={question}>
+            <p className="qcm-question">{question}</p>
+            <textarea
+              rows={4}
+              value={answers[index]}
+              onChange={(event) => onChangeAnswer(index, event.target.value)}
+              placeholder="Your answer"
+              required
+            />
+          </li>
+        ))}
+      </ol>
+      <button className="btn" type="submit" disabled={sending}>
+        {sending ? 'Sending...' : 'Submit Exercise 1'}
+      </button>
+      <p className="muted">{status}</p>
+    </form>
+  );
+}
+
+function Day3Ex2Form() {
+  const [name, setName] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [status, setStatus] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (!name.trim()) {
+      setStatus('Please enter your first name.');
+      return;
+    }
+    if (!answer.trim()) {
+      setStatus('Please write your response.');
+      return;
+    }
+    setSending(true);
+    setStatus('');
+    try {
+      await sendToSheet({
+        sheetName: SHEET_DAY3_EX2,
+        name: name.trim(),
+        answer,
+        submittedAt: new Date().toISOString(),
+      });
+      setStatus('Thanks, your answer has been sent.');
+    } catch (error) {
+      setStatus('Error while sending. Please try again later.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <form className="long-form" onSubmit={onSubmit}>
+      <p>
+        Design a governance contract in Solidity using OpenZeppelin libraries. The goal is to allow
+        token holders to vote on proposals.
+      </p>
+      <p>Requirements:</p>
+      <ul className="flat-list">
+        <li>Use <span className="mono">ERC20Votes</span> for the governance token.</li>
+        <li>Use <span className="mono">Governor</span> + modules (quorum, timelock).</li>
+        <li>Define a proposal lifecycle (creation, voting, execution).</li>
+        <li>Specify key parameters (quorum %, voting delay, voting period).</li>
+        <li>Include an example proposal (e.g., change a parameter).</li>
+      </ul>
+      <label className="field">
+        First name
+        <input
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Your first name"
+          required
+        />
+      </label>
+      <label className="field">
+        Response
+        <textarea
+          rows={12}
+          value={answer}
+          onChange={(event) => setAnswer(event.target.value)}
+          placeholder="Copy paste your code here, with your comments"
           required
         />
       </label>
